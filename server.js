@@ -1,45 +1,17 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
+const express = require("express");
+const calc = require("./routes/calc");
 
+// Initialize app
 const app = express();
-app.use(bodyParser.json());
 
-// In-memory data storage
-const calculations = [];
+// Render homepage
+app.use(express.static(__dirname));
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Body parse for json, raw and x-www-form-urlencoded methods
+app.use(express.json());
+app.use(express.urlencoded({ extended: false })); // extended arg for body-parser deprecated undefined error
 
-// Define an API endpoint for calculating mortgage
-app.post('/calculate-mortgage', (req, res) => {
-    // Get loan details from the request body
-    const { loanAmount, interestRate, loanTerm } = req.body;
+// API routes
+app.use("/api/calc", calc);
 
-    // Calculate monthly mortgage payment
-    const monthlyInterestRate = (interestRate / 100) / 12;
-    const totalPayments = loanTerm * 12;
-    const monthlyPayment = (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -totalPayments));
-
-    // Store the calculation result
-    const calculationResult = {
-        loanAmount,
-        interestRate,
-        loanTerm,
-        monthlyPayment: monthlyPayment.toFixed(2),
-        timestamp: new Date().toISOString(),
-    };
-    calculations.push(calculationResult);
-    // Respond with the calculated monthly payment in JSON format
-    res.json(calculationResult);
-});
-
-// Define an API endpoint to retrieve all calculations
-app.get('/calculations', (req, res) => {
-    res.json(calculations);
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.listen(3000);
