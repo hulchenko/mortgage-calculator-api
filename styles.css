@@ -1,0 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10rem;
+}
+
+form {
+  width: 10rem;
+  margin-top: 1rem;
+}
+
+#form-item {
+  margin-block: 1rem;
+}
+
+form button {
+  float: right;
+}
