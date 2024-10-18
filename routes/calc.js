@@ -1,51 +1,52 @@
 const express = require("express");
 const router = express.Router();
 
-let calculations = [];
+const percentToDecimal = require("../util");
 
-const handleCalc = ({
-  amount = 0,
-  interest = 0,
-  term = 0,
-  freqType,
-  deposit = 0,
-}) => {
-  // Calculation logic
-  // 1. Amount
-  // 2. Interest rate
-  // 3. Amortization Period(First time buyer ? max(30) : max(25))
-  // 4. Payment frequency
-  // 5. Deposit amount
-  calculations = [];
-  // Calculate monthly mortgage payment
-  const annualPayments = getAnnualFreq(freqType); // annual amount of payments
-  const interestPayment = getInterestPayment(interest, amount, annualPayments); // interest rate per payment
-  console.log(interestPayment);
-  const totalPayments = term * annualPayments; // total amount of payments
-  console.log(totalPayments);
-  const principalPayment =
-    (amount * interestPayment) /
-    (1 - Math.pow(1 + interestPayment, -totalPayments));
-  console.log(principalPayment);
+const handleCalc = ({ principalAmount = 0, rate = 0, term = 0, freqType = null, deposit = 0 }) => {
+  principalAmount = parseInt(principalAmount);
+  rate = parseFloat(rate);
+  term = parseInt(term); // years
+  deposit = parseInt(deposit);
 
-  // Store the calculation result
-  const result = {
-    amount,
-    interestRate: interest,
+  const totalPayments = term * 12; // TODO
+  const monthlyRate = getMonthlyInterestRate(rate);
+  const monthlyPayment = getMonthlyPayment(principalAmount, monthlyRate, totalPayments); // this is to be updated based on frequency;
+  const totalInterest = getTotalInterest(principalAmount, monthlyPayment, totalPayments).toFixed(2);
+  const totalCost = getTotalCost(monthlyPayment, totalPayments).toFixed(2);
+
+  const summary = {
+    principalAmount,
+    rate,
     term,
-    deposit,
-    principalPayment: principalPayment.toFixed(2),
-    interestPayment: interestPayment.toFixed(2),
-    timestamp: new Date().toISOString(),
+    totalPayments,
+    monthlyPayment: monthlyPayment.toFixed(2),
+    totalCost,
+    totalInterest,
   };
 
-  console.log(`result: `, result);
+  console.log(`summary: `, summary);
 
-  calculations.push(result);
+  const schedule = createPaymentSchedule(principalAmount, monthlyPayment, totalPayments, monthlyRate);
+
+  return { summary, schedule };
+};
+
+const getMonthlyInterestRate = (ratePercent) => {
+  const annualRate = percentToDecimal(ratePercent);
+  return annualRate / 12; // TODO fix hardcoded 12 to frequency provided
+};
+
+const getMonthlyPayment = (principalAmount, monthlyRate, totalPayments) => {
+  // M=P×(r(1+r)n/(1+r)n-1) monthly payment formula
+
+  return (
+    principalAmount *
+    ((monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) / (Math.pow(1 + monthlyRate, totalPayments) - 1))
+  );
 };
 
 const getAnnualFreq = (type) => {
-  console.log(`TYPE: `, type);
   switch (type) {
     case "weekly":
       return 52;
@@ -60,20 +61,46 @@ const getAnnualFreq = (type) => {
   }
 };
 
-const getInterestPayment = (int, amount, freq) => {
-  return int / amount / freq;
+const getTotalCost = (monthlyPayment, totalPayments) => {
+  return monthlyPayment * totalPayments;
 };
 
-// router.get("/", (req, res) => {
-//   console.log(`get fired`);
-//   res.json(calculations);
-// });
+const getTotalInterest = (principalAmount, monthlyPayment, totalPayments) => {
+  return monthlyPayment * totalPayments - principalAmount;
+};
+
+const createPaymentSchedule = (principalAmount, monthlyPayment, totalPayments, monthlyRate) => {
+  const schedule = [];
+  let remainingBalance = principalAmount; // init
+
+  for (let i = 1; i <= totalPayments; i++) {
+    const interestPayment = remainingBalance * monthlyRate; // interest for this period
+    const principalPayment = monthlyPayment - interestPayment; // principal paid
+    remainingBalance -= principalPayment; // new remaining balance after this payment
+
+    if (remainingBalance < 0) remainingBalance = 0; // edge case
+
+    schedule.push({
+      payment: i,
+      principalPayment: principalPayment.toFixed(2),
+      interestPayment: interestPayment.toFixed(2),
+      totalPayment: monthlyPayment.toFixed(2),
+      endingBalance: remainingBalance.toFixed(2),
+    });
+  }
+
+  return schedule;
+};
 
 router.post("/", (req, res) => {
-  console.log(`post fired`);
   const userInput = req.body;
-  handleCalc(userInput);
-  res.json(calculations);
+  const { summary, schedule } = handleCalc(userInput);
+  res.json({ summary, schedule });
 });
+
+// router.get("/schedule", (req, res) => {
+//   const { schedule } = handleCalc(userInput);
+//   res.json(schedule);
+// });
 
 module.exports = router;
