@@ -26,20 +26,20 @@
         <input type="number" id="term" max="30" required />
       </div>
 
-      <!-- <div id="form-item">
+      <div id="form-item">
         <label for="freq-type">Payment Frequency</label>
         <select id="freq-type" required>
-          <option value="weekly">Weekly</option>
-          <option value="bi-weekly">Bi-Weekly</option>
-          <option value="semi-monthly">Semi-Monthly</option>
           <option value="monthly">Monthly</option>
+          <option value="semi-monthly">Semi-Monthly</option>
+          <option value="bi-weekly">Bi-Weekly</option>
+          <option value="weekly">Weekly</option>
         </select>
-      </div> -->
+      </div>
 
-      <!-- <div id="form-item">
+      <div id="form-item">
         <label for="deposit">Down Payment</label>
         <input type="number" id="deposit" value="0" required />
-      </div> -->
+      </div>
 
       <button type="button" id="calc">Calculate</button>
     </form>
@@ -57,7 +57,11 @@
         <tbody>
           <tr id="total-payments">
             <th scope="row">
-              <span title="The number of payments made during the Term and Amoritization period respectively.">?</span>
+              <span
+                id="tooltip"
+                title="The number of payments made during the Term and Amoritization period respectively."
+                >?</span
+              >
               Number of payments
             </th>
             <td></td>
@@ -91,11 +95,6 @@
         </tbody>
       </table>
     </div>
-
-    <!-- <div id="diagram">
-      <h2>Payment Diagram</h2>
-      <p id="payment-diagram"></p>
-    </div> -->
 
     <div id="schedule" class="hidden">
       <h2>Payment Schedule</h2>

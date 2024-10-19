@@ -30,8 +30,8 @@ const getFormData = () => {
   const principalAmount = document.getElementById("principal-amount").value;
   const rate = document.getElementById("rate").value;
   const term = document.getElementById("term").value;
-  // const freqType = document.getElementById("freq-type").value;
-  // const deposit = document.getElementById("deposit").value;
+  const freqType = document.getElementById("freq-type").value;
+  const deposit = document.getElementById("deposit").value;
 
   // if (isNaN(loanAmount) || isNaN(intRate) || isNaN(loanTerm)) {
   //   alert("Please enter valid numeric values.");
@@ -39,8 +39,7 @@ const getFormData = () => {
   // }
   // TODO replace with on - screen message
 
-  // return { principalAmount, rate, term, freqType, deposit };
-  return { principalAmount, rate, term };
+  return { principalAmount, rate, term, freqType, deposit };
 };
 
 const displaySummary = (data) => {
@@ -51,12 +50,12 @@ const displaySummary = (data) => {
   payments.querySelector("td:nth-child(3)").textContent = data.totalPayments;
 
   const mortgage = document.getElementById("mortage-payment");
-  mortgage.querySelector("td:nth-child(2)").textContent = data.monthlyPayment;
-  mortgage.querySelector("td:nth-child(3)").textContent = data.monthlyPayment;
+  mortgage.querySelector("td:nth-child(2)").textContent = data.singlePayment;
+  mortgage.querySelector("td:nth-child(3)").textContent = data.singlePayment;
 
   const prepayment = document.getElementById("prepayment");
-  prepayment.querySelector("td:nth-child(2)").textContent = data.prepayment;
-  prepayment.querySelector("td:nth-child(3)").textContent = data.prepayment;
+  prepayment.querySelector("td:nth-child(2)").textContent = data.deposit;
+  prepayment.querySelector("td:nth-child(3)").textContent = data.deposit;
 
   const principal = document.getElementById("principal");
   principal.querySelector("td:nth-child(2)").textContent = data.principalAmount;
@@ -74,6 +73,7 @@ const displaySummary = (data) => {
 const displaySchedule = (payments) => {
   document.getElementById("schedule").classList.remove("hidden"); // change table visibility
   const tableBody = document.getElementById("schedule-body");
+  tableBody.innerHTML = ""; // clean-up for subsequent calls
 
   for (p of payments) {
     const row = document.createElement("tr");
@@ -94,6 +94,7 @@ const displaySchedule = (payments) => {
     balance.textContent = p.endingBalance;
 
     row.append(period, principal, interest, total, balance);
+
     tableBody.append(row);
   }
 };
