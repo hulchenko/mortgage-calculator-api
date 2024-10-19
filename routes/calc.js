@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import { percentToDecimal } from "../public/js/util.js";
 
-const percentToDecimal = require("../util");
+const router = express.Router();
 
 const handleCalc = ({ principalAmount = 0, rate = 0, term = 0, freqType = "monthly", deposit = 0 }) => {
   principalAmount = parseInt(principalAmount);
@@ -119,4 +119,4 @@ router.post("/", (req, res) => {
 //   res.json(schedule);
 // });
 
-module.exports = router;
+export default router;

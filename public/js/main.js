@@ -1,5 +1,6 @@
+import { getFormData } from "./util.js";
+
 const btn = document.getElementById("calc");
-const summary = document.getElementById("calc-summary");
 
 const calculateMortgage = async () => {
   try {
@@ -24,22 +25,6 @@ const calculateMortgage = async () => {
   } catch (error) {
     console.error("An error occurred:", error);
   }
-};
-
-const getFormData = () => {
-  const principalAmount = document.getElementById("principal-amount").value;
-  const rate = document.getElementById("rate").value;
-  const term = document.getElementById("term").value;
-  const freqType = document.getElementById("freq-type").value;
-  const deposit = document.getElementById("deposit").value;
-
-  // if (isNaN(loanAmount) || isNaN(intRate) || isNaN(loanTerm)) {
-  //   alert("Please enter valid numeric values.");
-  //   return null;
-  // }
-  // TODO replace with on - screen message
-
-  return { principalAmount, rate, term, freqType, deposit };
 };
 
 const displaySummary = (data) => {
@@ -75,7 +60,7 @@ const displaySchedule = (payments) => {
   const tableBody = document.getElementById("schedule-body");
   tableBody.innerHTML = ""; // clean-up for subsequent calls
 
-  for (p of payments) {
+  for (const p of payments) {
     const row = document.createElement("tr");
 
     const period = document.createElement("th");

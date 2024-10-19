@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mortgage Calculator</title>
-    <link rel="stylesheet" href="./../styles.css" />
+    <title>Mortgage Calculator Homepage</title>
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
 
   <body>
@@ -96,7 +96,9 @@
       </table>
     </div>
 
-    <div id="schedule" class="hidden">
+    <button id="report-btn" onclick="location.href='/report.html'">Full Report</button>
+
+    <!-- <div id="schedule" class="hidden">
       <h2>Payment Schedule</h2>
       <table>
         <thead>
@@ -110,8 +112,8 @@
         </thead>
         <tbody id="schedule-body"></tbody>
       </table>
-    </div>
+    </div> -->
 
-    <script src="main.js"></script>
+    <script type="module" src="./js/main.js"></script>
   </body>
 </html>

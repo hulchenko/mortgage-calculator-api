@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mortgage Calculator Schedule Report</title>
+  </head>
+  <body>
+    <button id="report-btn" onclick="location.href='/'">< Homepage</button>
+    <div id="schedule" class="hidden">
+      <h2>Payment Schedule</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Period</th>
+            <th scope="col">Principal Payment</th>
+            <th scope="col">Interest Payment</th>
+            <th scope="col">Total Payment</th>
+            <th scope="col">Ending Balance</th>
+          </tr>
+        </thead>
+        <tbody id="schedule-body"></tbody>
+      </table>
+    </div>
+  </body>
+</html>
