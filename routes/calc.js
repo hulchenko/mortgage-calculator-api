@@ -76,7 +76,6 @@ const getSinglePayment = (principalAmount, ratePerPayment, totalPayments) => {
 };
 
 const getTotalCost = (singlePayment, totalPayments) => {
-  console.log(`answer: `, [singlePayment, totalPayments]);
   return singlePayment * totalPayments;
 };
 
@@ -156,10 +155,5 @@ router.post("/", (req, res) => {
   const { summary, schedule } = handleCalc(userInput);
   res.json({ summary, schedule });
 });
-
-// router.get("/schedule", (req, res) => {
-//   const { schedule } = handleCalc(userInput);
-//   res.json(schedule);
-// });
 
 export default router;

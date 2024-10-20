@@ -16,3 +16,8 @@ export const getFormData = () => {
 
   return { principalAmount, rate, amortization, term, freqType, deposit };
 };
+
+export const store = (schedule) => {
+  sessionStorage.removeItem("schedule");
+  sessionStorage.setItem("schedule", JSON.stringify(schedule));
+};

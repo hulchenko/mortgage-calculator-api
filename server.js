@@ -3,7 +3,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import calc from "./routes/calc.js";
-import report from "./routes/report.js";
 
 // Initialize app
 const app = express();
@@ -20,6 +19,5 @@ app.use(express.urlencoded({ extended: false })); // extended arg for body-parse
 
 // API routes
 app.use("/api/calc", calc);
-app.use("/api/report", report);
 
 app.listen(3000, () => console.log("Server is running on port 3000"));

@@ -1,4 +1,4 @@
-import { getFormData } from "./util.js";
+import { getFormData, store } from "./util.js";
 
 const calcBtn = document.getElementById("calc");
 const resetBtn = document.getElementById("reset");
@@ -23,9 +23,9 @@ const calculateMortgage = async () => {
     // use routing for schedule list + back to homepage
 
     const { summary, schedule } = await response.json();
+
     displaySummary(summary);
-    displaySchedule(schedule);
-    console.log(`SCHEDULE: `, schedule);
+    store(schedule); // session storage
   } catch (error) {
     console.error("An error occurred:", error);
   }
@@ -71,35 +71,6 @@ const displaySummary = (data) => {
   total.querySelector("td:nth-child(3)").textContent = amortizationCost;
 };
 
-const displaySchedule = (payments) => {
-  document.getElementById("schedule").classList.remove("hidden"); // change table visibility
-  const tableBody = document.getElementById("schedule-body");
-  tableBody.innerHTML = ""; // clean-up for subsequent calls
-
-  for (const p of payments) {
-    const row = document.createElement("tr");
-
-    const period = document.createElement("th");
-    period.textContent = p.payment;
-
-    const principal = document.createElement("td");
-    principal.textContent = p.principalPayment;
-
-    const interest = document.createElement("td");
-    interest.textContent = p.interestPayment;
-
-    const total = document.createElement("td");
-    total.textContent = p.totalPayment;
-
-    const balance = document.createElement("td");
-    balance.textContent = p.endingBalance;
-
-    row.append(period, principal, interest, total, balance);
-
-    tableBody.append(row);
-  }
-};
-
 const generateAmortizationOptions = () => {
   const min = 1;
   const max = 30;
@@ -122,4 +93,7 @@ generateAmortizationOptions();
 generateTermOptions();
 
 calcBtn.addEventListener("click", () => calculateMortgage());
-resetBtn.addEventListener("click", () => window.location.reload());
+resetBtn.addEventListener("click", () => {
+  sessionStorage.clear();
+  window.location.reload();
+});
