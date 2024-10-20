@@ -26,12 +26,17 @@ const handleCalc = ({ principalAmount = 0, rate = 0, amortization = 0, freqType 
   const { termInterest, termPrincipalAmount } = getTermData(principalAmount, singlePayment, termPaymentsQty, ratePerPayment, deposit);
   const termCost = getTotalCost(singlePayment, termPaymentsQty);
 
+  // Generated objects
+  const schedule = createPaymentSchedule(principalAmount, singlePayment, amortizationPaymentsQty, ratePerPayment, deposit);
+
+  const updatedAmortizationPaymentsQty = updateAmortizationPaymentNum(schedule, amortizationPaymentsQty, deposit);
+
   const summary = {
     termPaymentsQty,
     termPrincipalAmount: termPrincipalAmount.toFixed(2),
     termInterest: termInterest.toFixed(2),
     termCost: termCost.toFixed(2),
-    amortizationPaymentsQty,
+    amortizationPaymentsQty: updatedAmortizationPaymentsQty,
     singlePayment: singlePayment.toFixed(2),
     deposit,
     principalAmount: principalAmount.toFixed(2),
@@ -40,8 +45,6 @@ const handleCalc = ({ principalAmount = 0, rate = 0, amortization = 0, freqType 
   };
 
   console.log(`summary: `, summary);
-
-  const schedule = createPaymentSchedule(principalAmount, singlePayment, amortizationPaymentsQty, ratePerPayment, deposit);
 
   return { summary, schedule };
 };
@@ -79,6 +82,14 @@ const getTotalCost = (singlePayment, totalPayments) => {
 
 const getTotalInterest = (principalAmount, singlePayment, totalPayments) => {
   return singlePayment * totalPayments - principalAmount;
+};
+
+const updateAmortizationPaymentNum = (list, originalQty, deposit) => {
+  // total amount changes based on deposit
+  if (deposit && list.length) {
+    return list[list.length - 1].payment;
+  }
+  return originalQty;
 };
 
 const getTermData = (principalAmount, singlePayment, termPayments, ratePerPayment, deposit) => {
