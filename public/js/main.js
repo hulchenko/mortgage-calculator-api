@@ -1,6 +1,10 @@
 import { getFormData } from "./util.js";
 
-const btn = document.getElementById("calc");
+const calcBtn = document.getElementById("calc");
+const resetBtn = document.getElementById("reset");
+
+const term = document.getElementById("term");
+const amortization = document.getElementById("amortization");
 
 const calculateMortgage = async () => {
   try {
@@ -29,30 +33,42 @@ const calculateMortgage = async () => {
 
 const displaySummary = (data) => {
   console.log(data);
+  const {
+    termPaymentsQty,
+    termPrincipalAmount,
+    termInterest,
+    termCost,
+    amortizationPaymentsQty,
+    singlePayment,
+    deposit,
+    principalAmount,
+    amortizationInterest,
+    amortizationCost,
+  } = data;
   // {"principalAmount":100000,"rate":5,"term":5,"totalPayments":60,"monthlyPayment":"1887.12","totalCost":"113227.40","totalInterest":"13227.40"}
   const payments = document.getElementById("total-payments");
-  payments.querySelector("td:nth-child(2)").textContent = data.totalPayments;
-  payments.querySelector("td:nth-child(3)").textContent = data.totalPayments;
+  payments.querySelector("td:nth-child(2)").textContent = termPaymentsQty;
+  payments.querySelector("td:nth-child(3)").textContent = amortizationPaymentsQty;
 
   const mortgage = document.getElementById("mortage-payment");
-  mortgage.querySelector("td:nth-child(2)").textContent = data.singlePayment;
-  mortgage.querySelector("td:nth-child(3)").textContent = data.singlePayment;
+  mortgage.querySelector("td:nth-child(2)").textContent = singlePayment;
+  mortgage.querySelector("td:nth-child(3)").textContent = singlePayment;
 
   const prepayment = document.getElementById("prepayment");
-  prepayment.querySelector("td:nth-child(2)").textContent = data.deposit;
-  prepayment.querySelector("td:nth-child(3)").textContent = data.deposit;
+  prepayment.querySelector("td:nth-child(2)").textContent = deposit;
+  prepayment.querySelector("td:nth-child(3)").textContent = deposit;
 
   const principal = document.getElementById("principal");
-  principal.querySelector("td:nth-child(2)").textContent = data.principalAmount;
-  principal.querySelector("td:nth-child(3)").textContent = data.principalAmount;
+  principal.querySelector("td:nth-child(2)").textContent = termPrincipalAmount;
+  principal.querySelector("td:nth-child(3)").textContent = principalAmount;
 
   const interest = document.getElementById("interest");
-  interest.querySelector("td:nth-child(2)").textContent = data.totalInterest;
-  interest.querySelector("td:nth-child(3)").textContent = data.totalInterest;
+  interest.querySelector("td:nth-child(2)").textContent = termInterest;
+  interest.querySelector("td:nth-child(3)").textContent = amortizationInterest;
 
   const total = document.getElementById("total-cost");
-  total.querySelector("td:nth-child(2)").textContent = data.totalCost;
-  total.querySelector("td:nth-child(3)").textContent = data.totalCost;
+  total.querySelector("td:nth-child(2)").textContent = termCost;
+  total.querySelector("td:nth-child(3)").textContent = amortizationCost;
 };
 
 const displaySchedule = (payments) => {
@@ -84,4 +100,26 @@ const displaySchedule = (payments) => {
   }
 };
 
-btn.addEventListener("click", () => calculateMortgage());
+const generateAmortizationOptions = () => {
+  const min = 1;
+  const max = 30;
+
+  for (let i = min; i <= max; i++) {
+    amortization.options[amortization.options.length] = new Option(i, i);
+  }
+};
+
+const generateTermOptions = () => {
+  const min = 1;
+  const max = 10;
+
+  for (let i = min; i <= max; i++) {
+    term.options[term.options.length] = new Option(i, i);
+  }
+};
+
+generateAmortizationOptions();
+generateTermOptions();
+
+calcBtn.addEventListener("click", () => calculateMortgage());
+resetBtn.addEventListener("click", () => window.location.reload());

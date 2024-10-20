@@ -3,49 +3,47 @@ import { percentToDecimal } from "../public/js/util.js";
 
 const router = express.Router();
 
-const handleCalc = ({ principalAmount = 0, rate = 0, term = 0, freqType = "monthly", deposit = 0 }) => {
-  principalAmount = parseInt(principalAmount);
-  rate = parseFloat(rate);
-  term = parseInt(term); // years
-  deposit = parseInt(deposit);
+const handleCalc = ({ principalAmount = 0, rate = 0, amortization = 0, freqType = "monthly", term = 0, deposit = 0 }) => {
+  principalAmount = parseInt(principalAmount) || 0;
+  rate = parseFloat(rate) || 0;
+  amortization = parseInt(amortization) || 0;
+  term = parseInt(term) || 0;
+  deposit = parseInt(deposit) || 0;
+
+  console.log({ principalAmount, rate, amortization, freqType, term, deposit });
 
   const paymentsPerYear = getAnnualFreq(freqType);
-  const totalPayments = term * paymentsPerYear;
   const ratePerPayment = getRatePerPayment(rate, paymentsPerYear);
-  const singlePayment = getSinglePayment(principalAmount, ratePerPayment, totalPayments);
-  const totalInterest = getTotalInterest(principalAmount, singlePayment, totalPayments).toFixed(2);
-  const totalCost = getTotalCost(singlePayment, totalPayments).toFixed(2);
+
+  // Per amortization period
+  const amortizationPaymentsQty = amortization * paymentsPerYear;
+  const singlePayment = getSinglePayment(principalAmount, ratePerPayment, amortizationPaymentsQty);
+  const amortizationInterest = getTotalInterest(principalAmount, singlePayment, amortizationPaymentsQty);
+  const amortizationCost = getTotalCost(singlePayment, amortizationPaymentsQty);
+
+  // Per term period
+  const termPaymentsQty = term * paymentsPerYear;
+  const { termInterest, termPrincipalAmount } = getTermData(principalAmount, singlePayment, termPaymentsQty, ratePerPayment, deposit);
+  const termCost = getTotalCost(singlePayment, termPaymentsQty);
 
   const summary = {
-    principalAmount,
-    rate,
-    term,
-    totalPayments,
+    termPaymentsQty,
+    termPrincipalAmount: termPrincipalAmount.toFixed(2),
+    termInterest: termInterest.toFixed(2),
+    termCost: termCost.toFixed(2),
+    amortizationPaymentsQty,
     singlePayment: singlePayment.toFixed(2),
-    totalCost,
-    totalInterest,
     deposit,
+    principalAmount: principalAmount.toFixed(2),
+    amortizationInterest: amortizationInterest.toFixed(2),
+    amortizationCost: amortizationCost.toFixed(2),
   };
 
   console.log(`summary: `, summary);
 
-  const schedule = createPaymentSchedule(principalAmount, singlePayment, totalPayments, ratePerPayment, deposit);
+  const schedule = createPaymentSchedule(principalAmount, singlePayment, amortizationPaymentsQty, ratePerPayment, deposit);
 
   return { summary, schedule };
-};
-
-const getRatePerPayment = (ratePercent, paymentsPerYear) => {
-  const annualRate = percentToDecimal(ratePercent);
-  return annualRate / paymentsPerYear;
-};
-
-const getSinglePayment = (principalAmount, ratePerPayment, totalPayments) => {
-  // M=P×(r(1+r)n/(1+r)n-1) monthly payment formula
-
-  return (
-    principalAmount *
-    ((ratePerPayment * Math.pow(1 + ratePerPayment, totalPayments)) / (Math.pow(1 + ratePerPayment, totalPayments) - 1))
-  );
 };
 
 const getAnnualFreq = (type) => {
@@ -63,12 +61,46 @@ const getAnnualFreq = (type) => {
   }
 };
 
+const getRatePerPayment = (ratePercent, paymentsPerYear) => {
+  const annualRate = percentToDecimal(ratePercent);
+  return annualRate / paymentsPerYear;
+};
+
+const getSinglePayment = (principalAmount, ratePerPayment, totalPayments) => {
+  // M=P×(r(1+r)n/(1+r)n-1) monthly payment formula
+
+  return principalAmount * ((ratePerPayment * Math.pow(1 + ratePerPayment, totalPayments)) / (Math.pow(1 + ratePerPayment, totalPayments) - 1));
+};
+
 const getTotalCost = (singlePayment, totalPayments) => {
+  console.log(`answer: `, [singlePayment, totalPayments]);
   return singlePayment * totalPayments;
 };
 
 const getTotalInterest = (principalAmount, singlePayment, totalPayments) => {
   return singlePayment * totalPayments - principalAmount;
+};
+
+const getTermData = (principalAmount, singlePayment, termPayments, ratePerPayment, deposit) => {
+  let remainingBalance = principalAmount;
+  let prepayment = deposit;
+
+  let termInterest = 0;
+  let termPrincipalAmount = 0;
+
+  while (termPayments) {
+    const currInterest = remainingBalance * ratePerPayment;
+    const currPrincipal = prepayment + singlePayment - currInterest;
+
+    remainingBalance -= currPrincipal;
+    prepayment = 0;
+    termPayments--;
+
+    termInterest += currInterest;
+    termPrincipalAmount += currPrincipal;
+  }
+
+  return { termInterest, termPrincipalAmount };
 };
 
 const createPaymentSchedule = (principalAmount, singlePayment, totalPayments, ratePerPayment, deposit) => {

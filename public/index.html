@@ -12,18 +12,18 @@
 
     <form id="mortgageForm">
       <div id="form-item">
-        <label for="principal-amount">Loan Amount ($)</label>
-        <input type="number" id="principal-amount" required />
+        <label for="principal-amount">Mortgage Amount ($)</label>
+        <input type="number" id="principal-amount" placeholder="0" required />
       </div>
 
       <div id="form-item">
         <label for="rate">Interest Rate (%)</label>
-        <input type="number" id="rate" step="0.01" required />
+        <input type="number" id="rate" step="0.01" placeholder="0" required />
       </div>
 
       <div id="form-item">
-        <label for="term">Loan Term (years)</label>
-        <input type="number" id="term" max="30" required />
+        <label for="amortization">Amortization Period (years)</label>
+        <select id="amortization" required></select>
       </div>
 
       <div id="form-item">
@@ -37,11 +37,17 @@
       </div>
 
       <div id="form-item">
-        <label for="deposit">Down Payment</label>
-        <input type="number" id="deposit" value="0" required />
+        <label for="term">Term (years)</label>
+        <select id="term" required></select>
+      </div>
+
+      <div id="form-item">
+        <label for="deposit">Down Payment ($)</label>
+        <input type="number" id="deposit" placeholder="0" required />
       </div>
 
       <button type="button" id="calc">Calculate</button>
+      <button type="button" id="reset">Reset</button>
     </form>
 
     <div id="summary">
@@ -57,11 +63,7 @@
         <tbody>
           <tr id="total-payments">
             <th scope="row">
-              <span
-                id="tooltip"
-                title="The number of payments made during the Term and Amoritization period respectively."
-                >?</span
-              >
+              <span id="tooltip" title="The number of payments made during the Term and Amoritization period respectively.">&#9432;</span>
               Number of payments
             </th>
             <td></td>
@@ -78,12 +80,12 @@
             <td></td>
           </tr>
           <tr id="principal">
-            <th scope="row">Principal Payment</th>
+            <th scope="row">Principal Payments</th>
             <td></td>
             <td></td>
           </tr>
           <tr id="interest">
-            <th scope="row">Interest Payment</th>
+            <th scope="row">Interest Payments</th>
             <td></td>
             <td></td>
           </tr>
@@ -98,7 +100,7 @@
 
     <button id="report-btn" onclick="location.href='/report.html'">Full Report</button>
 
-    <!-- <div id="schedule" class="hidden">
+    <div id="schedule" class="hidden">
       <h2>Payment Schedule</h2>
       <table>
         <thead>
@@ -112,7 +114,7 @@
         </thead>
         <tbody id="schedule-body"></tbody>
       </table>
-    </div> -->
+    </div>
 
     <script type="module" src="./js/main.js"></script>
   </body>

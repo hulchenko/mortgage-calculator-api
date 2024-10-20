@@ -79,7 +79,5 @@ tbody > tr:nth-of-type(even) {
 }
 
 #tooltip {
-  border: 1px solid black;
-  border-radius: 50px;
   cursor: default;
 }
