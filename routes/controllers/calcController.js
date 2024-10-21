@@ -1,3 +1,5 @@
+import { formatNum } from "../utils/format.js";
+
 export const calculateMortgage = (req, res, next) => {
   let { principalAmount, rate, amortization, freqType, term, deposit } = req.body;
 
@@ -29,15 +31,15 @@ export const calculateMortgage = (req, res, next) => {
 
     const summary = {
       termPaymentsQty,
-      termPrincipalAmount: termPrincipalAmount.toFixed(2),
-      termInterest: termInterest.toFixed(2),
-      termCost: termCost.toFixed(2),
+      termPrincipalAmount: formatNum(termPrincipalAmount),
+      termInterest: formatNum(termInterest),
+      termCost: formatNum(termCost),
       amortizationPaymentsQty: updatedAmortizationPaymentsQty,
-      singlePayment: singlePayment.toFixed(2),
-      deposit,
-      principalAmount: principalAmount.toFixed(2),
-      amortizationInterest: amortizationInterest.toFixed(2),
-      amortizationCost: amortizationCost.toFixed(2),
+      singlePayment: formatNum(singlePayment),
+      deposit: formatNum(deposit),
+      principalAmount: formatNum(principalAmount),
+      amortizationInterest: formatNum(amortizationInterest),
+      amortizationCost: formatNum(amortizationCost),
     };
 
     res.status(200).json({ summary, schedule });
@@ -127,9 +129,9 @@ const createPaymentSchedule = (principalAmount, singlePayment, totalPayments, ra
       // calculate last payment
       schedule.push({
         payment: i,
-        principalPayment: lastPayment.toFixed(2),
-        interestPayment: interestPayment.toFixed(2),
-        totalPayment: (lastPayment + interestPayment).toFixed(2),
+        principalPayment: formatNum(lastPayment),
+        interestPayment: formatNum(interestPayment),
+        totalPayment: formatNum(lastPayment + interestPayment),
         endingBalance: 0,
       });
       break;
@@ -137,10 +139,10 @@ const createPaymentSchedule = (principalAmount, singlePayment, totalPayments, ra
 
     schedule.push({
       payment: i,
-      principalPayment: principalPayment.toFixed(2),
-      interestPayment: interestPayment.toFixed(2),
-      totalPayment: singlePayment.toFixed(2),
-      endingBalance: remainingBalance.toFixed(2),
+      principalPayment: formatNum(principalPayment),
+      interestPayment: formatNum(interestPayment),
+      totalPayment: formatNum(singlePayment),
+      endingBalance: formatNum(remainingBalance),
     });
   }
 
