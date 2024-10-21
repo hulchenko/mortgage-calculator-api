@@ -13,7 +13,7 @@ export const generateCSV = (req, res, next) => {
   const csvData = parseIntoCSV(paymentsList);
 
   if (!paymentsList.length || !csvData) {
-    const error = new Error("Failed to parse CSV data");
+    const error = new Error("Failed to generate CSV data");
     error.status = 500;
     return next(error);
   }

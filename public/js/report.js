@@ -1,9 +1,7 @@
-const generateBtn = document.getElementById("generate-btn");
+const downloadBtn = document.getElementById("download-btn");
 const paymentsList = JSON.parse(sessionStorage.getItem("schedule"));
 
 const displaySchedule = (payments) => {
-  document.getElementById("schedule").classList.remove("hidden"); // change table visibility
-
   if (!payments) return;
 
   const tableBody = document.getElementById("schedule-body");
@@ -33,7 +31,7 @@ const displaySchedule = (payments) => {
   }
 };
 
-const downloadFile = (blob) => {
+const downloadBlob = (blob) => {
   // Create a download link and trigger it
   const link = document.createElement("a");
   const url = window.URL.createObjectURL(blob);
@@ -48,7 +46,9 @@ const downloadFile = (blob) => {
   link.remove();
 };
 
-const generateFile = async () => {
+const downloadFile = async () => {
+  if (!paymentsList) return;
+
   try {
     const response = await fetch("/api/report", {
       method: "POST",
@@ -59,18 +59,18 @@ const generateFile = async () => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to generate CSV");
+      throw new Error("Failed to download file");
     }
 
     const blob = await response.blob();
-    downloadFile(blob);
+    downloadBlob(blob);
   } catch (error) {
     console.error(error);
   }
 };
 
 // Event listeners
-generateBtn.addEventListener("click", () => generateFile());
+downloadBtn.addEventListener("click", () => downloadFile());
 
 // Generate HTML
 displaySchedule(paymentsList);
