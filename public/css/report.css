@@ -1,0 +1,14 @@
+#report-btns {
+  width: 18rem;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5rem;
+}
+
+#schedule {
+  margin-block: 2rem;
+}
+
+#schedule h2 {
+  text-align: center;
+}
