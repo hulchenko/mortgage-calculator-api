@@ -15,12 +15,12 @@
     <form id="mortgageForm">
       <div id="form-item">
         <label for="principal-amount">Mortgage Amount ($)</label>
-        <input type="number" id="principal-amount" placeholder="0" required />
+        <input type="number" id="principal-amount" min="0" placeholder="0" required />
       </div>
 
       <div id="form-item">
         <label for="rate">Interest Rate (%)</label>
-        <input type="number" id="rate" step="0.01" placeholder="0" required />
+        <input type="number" id="rate" step="0.01" min="0" placeholder="0" required />
       </div>
 
       <div id="form-item">
@@ -45,7 +45,7 @@
 
       <div id="form-item">
         <label for="deposit">Down Payment ($)</label>
-        <input type="number" id="deposit" placeholder="0" />
+        <input type="number" id="deposit" min="0" placeholder="0" />
       </div>
 
       <div id="form-btns">

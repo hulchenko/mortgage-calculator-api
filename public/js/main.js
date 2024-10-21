@@ -1,5 +1,6 @@
 const calcBtn = document.getElementById("calc");
 const resetBtn = document.getElementById("reset");
+const inputs = document.querySelectorAll("input");
 
 const term = document.getElementById("term");
 const amortization = document.getElementById("amortization");
@@ -120,6 +121,15 @@ resetBtn.addEventListener("click", () => {
   sessionStorage.clear();
   window.location.reload();
 });
+inputs.forEach((input) =>
+  // 46 for delimeter/period
+  // 48 -> 57 for 0-9
+  input.addEventListener("keypress", (e) => {
+    if (!(e.charCode >= 48 && e.charCode <= 57) && e.charCode !== 46) {
+      e.preventDefault();
+    }
+  })
+);
 
 // Generate HTML
 generateAmortizationOptions();
