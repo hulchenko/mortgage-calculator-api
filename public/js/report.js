@@ -5,7 +5,7 @@ const displaySchedule = (payments) => {
   if (!payments) return;
 
   const tableBody = document.getElementById("schedule-body");
-  tableBody.innerHTML = ""; // clean-up for subsequent calls
+  tableBody.innerHTML = ""; // reset for subsequent calls
 
   for (const p of payments) {
     const row = document.createElement("tr");

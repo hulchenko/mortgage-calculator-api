@@ -2,11 +2,11 @@
   width: 18rem;
   display: flex;
   justify-content: space-between;
-  margin-top: 5rem;
+  margin-top: 4rem;
 }
 
 #schedule {
-  margin-block: 2rem;
+  margin-block: 4rem;
 }
 
 #schedule h2 {
