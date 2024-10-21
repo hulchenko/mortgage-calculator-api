@@ -1,3 +1,4 @@
+const generateBtn = document.getElementById("generate-btn");
 const paymentsList = JSON.parse(sessionStorage.getItem("schedule"));
 
 const displaySchedule = (payments) => {
@@ -32,4 +33,18 @@ const displaySchedule = (payments) => {
   }
 };
 
+const generateFile = async () => {
+  const response = await fetch("/api/report", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(paymentsList),
+  });
+};
+
+// Event listeners
+generateBtn.addEventListener("click", () => generateFile());
+
+// Generate HTML
 displaySchedule(paymentsList);

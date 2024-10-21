@@ -1,5 +1,3 @@
-import { getFormData, store } from "./util.js";
-
 const calcBtn = document.getElementById("calc");
 const resetBtn = document.getElementById("reset");
 
@@ -18,21 +16,38 @@ const calculateMortgage = async () => {
       body: JSON.stringify(formData),
     });
 
-    // add another GET method for schedule
-    // add another GET for fs for csv
-    // use routing for schedule list + back to homepage
-
     const { summary, schedule } = await response.json();
 
     displaySummary(summary);
-    store(schedule); // session storage
+    storePaymentsList(schedule);
   } catch (error) {
-    console.error("An error occurred:", error);
+    console.error("Failed to calculate mortgage:", error);
   }
 };
 
+const getFormData = () => {
+  const principalAmount = document.getElementById("principal-amount").value;
+  const rate = document.getElementById("rate").value;
+  const amortization = document.getElementById("amortization").value;
+  const freqType = document.getElementById("freq-type").value;
+  const term = document.getElementById("term").value;
+  const deposit = document.getElementById("deposit").value;
+
+  // if (isNaN(loanAmount) || isNaN(intRate) || isNaN(loanTerm)) {
+  //   alert("Please enter valid numeric values.");
+  //   return null;
+  // }
+  // TODO replace with on - screen message
+
+  return { principalAmount, rate, amortization, term, freqType, deposit };
+};
+
+const storePaymentsList = (schedule) => {
+  sessionStorage.removeItem("schedule");
+  sessionStorage.setItem("schedule", JSON.stringify(schedule));
+};
+
 const displaySummary = (data) => {
-  console.log(data);
   const {
     termPaymentsQty,
     termPrincipalAmount,
@@ -89,11 +104,13 @@ const generateTermOptions = () => {
   }
 };
 
-generateAmortizationOptions();
-generateTermOptions();
-
+// Event listeners
 calcBtn.addEventListener("click", () => calculateMortgage());
 resetBtn.addEventListener("click", () => {
   sessionStorage.clear();
   window.location.reload();
 });
+
+// Generate HTML
+generateAmortizationOptions();
+generateTermOptions();
