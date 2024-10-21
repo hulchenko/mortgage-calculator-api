@@ -22,4 +22,6 @@ app.use(express.urlencoded({ extended: false })); // extended arg for body-parse
 app.use("/api/calc", calc);
 app.use("/api/report", report);
 
-app.listen(3000, () => console.log("Server is running on port 3000"));
+// app.listen(3000, () => console.log("Server is running on port 3000")); // local dev
+
+export default app;

@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "build": "echo 'Placeholder for Vercel deployment'",
+    "local": "node --watch server.js"
   },
   "author": "Vadym Hulchenko",
   "license": "ISC",
