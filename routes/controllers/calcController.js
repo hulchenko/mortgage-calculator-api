@@ -12,29 +12,28 @@ export const calculateMortgage = (req, res, next) => {
   try {
     const paymentsPerYear = getAnnualFreq(freqType);
     const ratePerPayment = getRatePerPayment(rate, paymentsPerYear);
-
-    // Per amortization period
-    const amortizationPaymentsQty = amortization * paymentsPerYear;
-    const singlePayment = getSinglePayment(principalAmount, ratePerPayment, amortizationPaymentsQty);
-    const amortizationInterest = getTotalInterest(principalAmount, singlePayment, amortizationPaymentsQty);
-    const amortizationCost = getTotalCost(singlePayment, amortizationPaymentsQty);
+    const amortizationPeriodPaymentsQty = amortization * paymentsPerYear; // pre deposit calculation
+    const singlePayment = getSinglePayment(principalAmount, ratePerPayment, amortizationPeriodPaymentsQty);
 
     // Per term period
     const termPaymentsQty = term * paymentsPerYear;
     const { termInterest, termPrincipalAmount } = getTermData(principalAmount, singlePayment, termPaymentsQty, ratePerPayment, deposit);
     const termCost = getTotalCost(singlePayment, termPaymentsQty);
 
-    // Generated objects
-    const schedule = createPaymentSchedule(principalAmount, singlePayment, amortizationPaymentsQty, ratePerPayment, deposit);
+    // Generate schedule
+    const schedule = createPaymentSchedule(principalAmount, singlePayment, amortizationPeriodPaymentsQty, ratePerPayment, deposit);
 
-    const updatedAmortizationPaymentsQty = updateAmortizationPaymentNum(schedule, amortizationPaymentsQty, deposit);
+    // Per amortization period
+    const amortizationPaymentsQty = depositReduceAmortizationPaymentQty(schedule, amortizationPeriodPaymentsQty, deposit);
+    const amortizationInterest = getTotalInterest(principalAmount, singlePayment, amortizationPaymentsQty);
+    const amortizationCost = getTotalCost(singlePayment, amortizationPaymentsQty);
 
     const summary = {
       termPaymentsQty,
       termPrincipalAmount: formatNum(termPrincipalAmount),
       termInterest: formatNum(termInterest),
       termCost: formatNum(termCost),
-      amortizationPaymentsQty: updatedAmortizationPaymentsQty,
+      amortizationPaymentsQty,
       singlePayment: formatNum(singlePayment),
       deposit: formatNum(deposit),
       principalAmount: formatNum(principalAmount),
@@ -82,7 +81,7 @@ const getTotalInterest = (principalAmount, singlePayment, totalPayments) => {
   return singlePayment * totalPayments - principalAmount;
 };
 
-const updateAmortizationPaymentNum = (list, originalQty, deposit) => {
+const depositReduceAmortizationPaymentQty = (list, originalQty, deposit) => {
   // total amount changes based on deposit
   if (deposit && list.length) {
     return list[list.length - 1].payment;
