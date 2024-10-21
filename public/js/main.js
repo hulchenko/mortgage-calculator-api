@@ -7,6 +7,7 @@ const amortization = document.getElementById("amortization");
 const calculateMortgage = async () => {
   try {
     const formData = getFormData();
+    if (!formData) return;
 
     const response = await fetch("/api/calc", {
       method: "POST",
@@ -33,11 +34,10 @@ const getFormData = () => {
   const term = document.getElementById("term").value;
   const deposit = document.getElementById("deposit").value;
 
-  // if (isNaN(loanAmount) || isNaN(intRate) || isNaN(loanTerm)) {
-  //   alert("Please enter valid numeric values.");
-  //   return null;
-  // }
-  // TODO replace with on - screen message
+  if (parseInt(amortization) < parseInt(term)) {
+    alert("The amortization period must be equal to or greater than the term.");
+    return null;
+  }
 
   return { principalAmount, rate, amortization, term, freqType, deposit };
 };
@@ -60,7 +60,7 @@ const displaySummary = (data) => {
     amortizationInterest,
     amortizationCost,
   } = data;
-  // {"principalAmount":100000,"rate":5,"term":5,"totalPayments":60,"monthlyPayment":"1887.12","totalCost":"113227.40","totalInterest":"13227.40"}
+
   const payments = document.getElementById("total-payments");
   payments.querySelector("td:nth-child(2)").textContent = termPaymentsQty;
   payments.querySelector("td:nth-child(3)").textContent = amortizationPaymentsQty;
@@ -105,7 +105,17 @@ const generateTermOptions = () => {
 };
 
 // Event listeners
-calcBtn.addEventListener("click", () => calculateMortgage());
+calcBtn.addEventListener("click", (event) => {
+  // Below is a workaround to prevent form from clearing while preserving native HTML required fields check
+  event.preventDefault();
+  const form = document.getElementById("mortgageForm");
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  calculateMortgage();
+});
 resetBtn.addEventListener("click", () => {
   sessionStorage.clear();
   window.location.reload();
