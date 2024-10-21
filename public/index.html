@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mortgage Calculator Homepage</title>
-    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./css/global.css" />
+    <link rel="stylesheet" href="./css/index.css" />
   </head>
 
   <body>
-    <h1>Mortgage Calculator</h1>
+    <h1 id="dashboard-header">Mortgage Calculator</h1>
 
     <form id="mortgageForm">
       <div id="form-item">
@@ -46,8 +48,10 @@
         <input type="number" id="deposit" placeholder="0" />
       </div>
 
-      <button type="submit" id="calc">Calculate</button>
-      <button type="button" id="reset">Reset</button>
+      <div id="form-btns">
+        <button type="button" id="reset">Reset</button>
+        <button type="submit" id="calc">Calculate</button>
+      </div>
     </form>
 
     <div id="summary">
@@ -63,34 +67,67 @@
         <tbody>
           <tr id="total-payments">
             <th scope="row">
-              <span id="tooltip" title="The number of payments made during the Term and Amoritization period respectively.">&#9432;</span>
+              <span id="tooltip" title="The number of payments made during the Term and Amoritization period respectively."
+                ><i class="fa fa-info-circle"></i
+              ></span>
               Number of payments
             </th>
             <td></td>
             <td></td>
           </tr>
           <tr id="mortage-payment">
-            <th scope="row">Mortgage Payment</th>
+            <th scope="row">
+              <span
+                id="tooltip"
+                title="The amount you will pay per period during the Term and Amoritization respectively, which include a portion for the principal payment and a portion for the interest payment."
+                ><i class="fa fa-info-circle"></i
+              ></span>
+              Mortgage Payment
+            </th>
             <td></td>
             <td></td>
           </tr>
           <tr id="prepayment">
-            <th scope="row">Prepayment</th>
+            <th scope="row">
+              <span id="tooltip" title="The amount of prepayment made during the Term and Amoritization period respectively."
+                ><i class="fa fa-info-circle"></i
+              ></span>
+              Prepayment
+            </th>
             <td></td>
             <td></td>
           </tr>
           <tr id="principal">
-            <th scope="row">Principal Payments</th>
+            <th scope="row">
+              <span id="tooltip" title="The total amount of principal payment made during the Term and Amoritization period respectively."
+                ><i class="fa fa-info-circle"></i
+              ></span>
+              Principal Payments
+            </th>
             <td></td>
             <td></td>
           </tr>
           <tr id="interest">
-            <th scope="row">Interest Payments</th>
+            <th scope="row">
+              <span
+                id="tooltip"
+                title="Total of all interest paid during the Term and Amoritization period respectively, assuming that the conditions of your loan (e.g. interest rate, amortization period, term, etc.) will not change during these periods. This total interest amount also assumes that there are no prepayments of principal."
+                ><i class="fa fa-info-circle"></i
+              ></span>
+              Interest Payments
+            </th>
             <td></td>
             <td></td>
           </tr>
           <tr id="total-cost">
-            <th scope="row">Total Cost</th>
+            <th scope="row">
+              <span
+                id="tooltip"
+                title="Total of all payments made during the Term and Amoritization period respectively, assuming that the conditions of your loan (e.g. interest rate, amortization period, term, etc.) will not change during these periods. It is also assumed that there are no prepayments of principal."
+                ><i class="fa fa-info-circle"></i
+              ></span>
+              Total Cost
+            </th>
             <td></td>
             <td></td>
           </tr>
