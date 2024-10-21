@@ -33,14 +33,40 @@ const displaySchedule = (payments) => {
   }
 };
 
+const downloadFile = (blob) => {
+  // Create a download link and trigger it
+  const link = document.createElement("a");
+  const url = window.URL.createObjectURL(blob);
+
+  link.href = url;
+  link.download = "mortgage_report.csv"; // The file name the user will download
+  document.body.appendChild(link);
+  link.click();
+
+  // Clean up DOM
+  window.URL.revokeObjectURL(url);
+  link.remove();
+};
+
 const generateFile = async () => {
-  const response = await fetch("/api/report", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(paymentsList),
-  });
+  try {
+    const response = await fetch("/api/report", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paymentsList),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to generate CSV");
+    }
+
+    const blob = await response.blob();
+    downloadFile(blob);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // Event listeners

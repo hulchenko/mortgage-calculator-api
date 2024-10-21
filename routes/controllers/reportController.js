@@ -1,5 +1,3 @@
-import fs from "node:fs";
-
 const parseIntoCSV = (payments) => {
   let result = "Period, Principal Payment, Interest Payment, Total Payment, Ending Balance\n";
   payments.forEach((row) => {
@@ -10,25 +8,17 @@ const parseIntoCSV = (payments) => {
   return result;
 };
 
-const createFile = (payments) => {
-  const path = `./test/mortgage_report.csv`; // TODO update
-  const text = parseIntoCSV(payments);
-
-  try {
-    fs.writeFileSync(path, text);
-    return { ok: false, msg: `Successfully saved to ${path}` };
-  } catch (error) {
-    return { ok: false, msg: `Failed to save the file to ${path}` };
-  }
-};
-
 export const generateCSV = (req, res, next) => {
   const paymentsList = req.body;
-  const response = createFile(paymentsList);
-  if (!response.ok) {
-    const error = new Error(response.msg);
+  const csvData = parseIntoCSV(paymentsList);
+
+  if (paymentsList.length || !csvData) {
+    const error = new Error("Failed to parse CSV data");
     error.status = 500;
     return next(error);
   }
-  res.status(200).json(response);
+
+  res.setHeader("Content-Type", "text/csv");
+  res.setHeader("Content-Disposition", "attachment; filename='mortgage_report.csv'");
+  res.status(201).send(csvData);
 };
