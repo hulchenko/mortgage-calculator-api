@@ -4,7 +4,7 @@ This is a **Mortgage Calculator** API built using **Express.js**.
 The application provides functionality to calculate mortgage payment schedules and generate CSV reports of the mortgage payment breakdown.
 The API takes into account variables such as the principal loan amount, interest rate, amortization period, term, and optional deposit, returning a detailed payment schedule and cost summary.
 
-<img src="https://raw.githubusercontent.com/hulchenko/mortgage-calculator-api/refs/heads/main/public/images/mortgage_calculator.jpg" alt="App Screenshot" width="500" height="500"/>
+<img src="https://raw.githubusercontent.com/hulchenko/mortgage-calculator-api/refs/heads/main/public/images/mortgage_calculator.jpg" alt="App Screenshot"/>
 
 ### Features:
 
